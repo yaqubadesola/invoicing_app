@@ -1,0 +1,8 @@
+core/storage/*.key
+core/vendor
+core/.env
+core/.env.backup
+core/.phpunit.result.cache
+assets/attachments
+assets/images
+.idea

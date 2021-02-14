@@ -1,0 +1,16 @@
+{!! Html::script(asset('assets/js/jquery-2.1.3.min.js')) !!}
+{!! Html::script(asset('assets/js/bootstrap.min.js')) !!}
+{!! Html::script(asset('assets/js/bootstrap-dialog.js')) !!}
+{!! Html::script(asset('assets/js/jquery.dataTables.js')) !!}
+{!! Html::script(asset('assets/js/datatables.js')) !!}
+{!! Html::script(asset('assets/js/pace.min.js')) !!}
+{!! Html::script(asset('assets/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js')) !!}
+{!! Html::script(asset('assets/plugins/pikaday/moment.js')) !!}
+{!! Html::script(asset('assets/plugins/pikaday/pikaday.js')) !!}
+{!! Html::script(asset('assets/plugins/pikaday/pikaday.jquery.js')) !!}
+{!! Html::script(asset('assets/plugins/chosen/chosen.jquery.js')) !!}
+{!! Html::script(asset('assets/plugins/animsition/js/jquery.animsition.min.js')) !!}
+{!! Html::script(asset('assets/js/validator.min.js')) !!}
+{!! Html::script(asset('assets/plugins/amaranjs/js/jquery.amaran.min.js')) !!}
+{!! Html::script(asset('assets/js/app.js')) !!}
+{!! Html::script(asset('assets/js/custom.js')) !!}
