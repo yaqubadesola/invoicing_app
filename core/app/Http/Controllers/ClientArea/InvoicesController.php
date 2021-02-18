@@ -49,9 +49,9 @@ class InvoicesController extends Controller {
                 })->addColumn('action', function($data) {
                     $action_buttons = '<a href="'.route('cinvoice_pdf',$data->uuid).'" data-rel="tooltip" data-placement="top" title="{{trans(\'application.download_invoice\')}}" class="btn btn-xs btn-primary"><i class="fa fa-download"></i></a> '.
                              show_btn('cinvoices.show', $data->uuid);
-                    if($data->totals['amountDue'] > 0){
-                        $action_buttons .= ' <a href="'.url('clientarea/payment_methods',$data->uuid).'" data-rel="tooltip" data-toggle="ajax-modal" data-placement="top" title="{{trans(\'application.add_payment\')}}" class="btn btn-xs btn-warning"><i class="fa fa-usd"></i> </a>';
-                    }
+                   // if($data->totals['amountDue'] > 0){
+                       //$action_buttons .= ' <a href="'.url('clientarea/payment_methods',$data->uuid).'" data-rel="tooltip" data-toggle="ajax-modal" data-placement="top" title="{{trans(\'application.add_payment\')}}" class="btn btn-xs btn-warning"><i class="fa fa-usd"></i> </a>';
+                    //}
                   return $action_buttons;
                 })
                 ->rawColumns(['status','grand_total','paid','amountDue','action','amountDue'])

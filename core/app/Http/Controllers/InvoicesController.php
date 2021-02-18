@@ -22,6 +22,8 @@ use Laracasts\Flash\Flash;
 use Yajra\DataTables\DataTables;
 use PDF;
 use Mail;
+
+
 class InvoicesController extends Controller {
    protected $product,$client,$tax,$currency,$invoice,$items,$setting,$number,$invoiceSetting, $template, $mail_setting,$subscription;
    public function __construct(Invoice $invoice, Product $product, Client $client,  Tax $tax, Currency $currency, InvoiceItem $items, Setting $setting, Number $number, InvoiceSetting $invoiceSetting, Template $template, MailSetting $mail_setting, Subscription $subscription){
@@ -192,9 +194,11 @@ class InvoicesController extends Controller {
 	{
         if(!hasPermission('view_invoice', true)) return redirect('invoices');
         $invoice = $this->invoice->getById($uuid);
+      
         if ($invoice) {
             $settings = $this->setting->first();
             $invoiceSettings = $this->invoiceSetting->first();
+            //dd($invoiceSettings);
             return view('invoices.show', compact('invoice', 'settings', 'invoiceSettings'));
         }
         return Redirect::route('invoices.index');
@@ -370,7 +374,9 @@ class InvoicesController extends Controller {
         $template = $this->template->where('name', 'invoice')->first();
         return view('invoices.send_modal',compact('invoice','template'));
     }
+
     public function send(SendEmailFrmRequest $request){
+        //dd($request->all());
         $uuid = $request->get('invoice_id');
         $invoice = $this->invoice->getById($uuid);
         $settings = $this->setting->first();
@@ -390,11 +396,15 @@ class InvoicesController extends Controller {
                 'attachment' => config('app.assets_path').'attachments/'.$pdf_name
             ],
             'to' => $request->get('email'),
+            'cc' => $request->get('cc_email'),
+            'bcc' => $request->get('bcc_email'),
             'template_type' => 'markdown',
             'template' => 'emails.invoicer-mailer',
             'subject' => parse_template($data_object,$request->get('subject'))
         ];
+        
         try {
+            //dd($params);
             sendmail($params);
             Flash::success(trans('application.email_sent'));
             return response()->json(['type' => 'success', 'message' => trans('application.email_sent')]);

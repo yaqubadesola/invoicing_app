@@ -16,6 +16,16 @@
                             {!! Form::text('email', $invoice->client ? $invoice->client->email : null, ['class' => 'form-control input-sm', 'required']) !!}
                         </div>
                         <div class="form-group">
+                            {{Form::hidden('invoice_id',$invoice->uuid)}}
+                            {!! Form::label('cc_email', trans('application.cc_email')) !!}
+                            {!! Form::text('cc_email', '', ['class' => 'form-control input-sm']) !!}
+                        </div>
+                        <div class="form-group">
+                            {{Form::hidden('invoice_id',$invoice->uuid)}}
+                            {!! Form::label('bcc_email', trans('application.bcc_email')) !!}
+                            {!! Form::text('bcc_email', '', ['class' => 'form-control input-sm']) !!}
+                        </div>
+                        <div class="form-group">
                             {!! Form::label('subject', trans('application.subject').'*') !!}
                             {!! Form::text('subject', $template->subject ?? '', ['class' => 'form-control input-sm', 'required']) !!}
                         </div>

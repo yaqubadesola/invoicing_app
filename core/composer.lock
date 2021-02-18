@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "667ef13d7f73a840241d0fd21788b050",
+    "content-hash": "873cc4828597abd52536b68c61689314",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -1480,6 +1480,123 @@
             "time": "2020-09-30T07:37:11+00:00"
         },
         {
+            "name": "hnhdigital-os/laravel-number-converter",
+            "version": "1.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hnhdigital-os/laravel-number-converter.git",
+                "reference": "535bf827d131d29ff22805f28461b66365cdb99a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hnhdigital-os/laravel-number-converter/zipball/535bf827d131d29ff22805f28461b66365cdb99a",
+                "reference": "535bf827d131d29ff22805f28461b66365cdb99a",
+                "shasum": ""
+            },
+            "require": {
+                "hnhdigital-os/php-number-converter": "1.*",
+                "illuminate/support": "^5.8|^6.0|^7.0|^8.0",
+                "php": "^7.2"
+            },
+            "require-dev": {
+                "phpmd/phpmd": "~2.0",
+                "squizlabs/php_codesniffer": "~3.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "HnhDigital\\LaravelNumberConverter\\ServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "HnhDigital\\LaravelNumberConverter\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rocco Howard",
+                    "email": "rocco@bluora.com.au"
+                }
+            ],
+            "description": "Number to word, roman, ordinal converter",
+            "keywords": [
+                "converter",
+                "laravel",
+                "number",
+                "ordinal",
+                "roman",
+                "word"
+            ],
+            "support": {
+                "issues": "https://github.com/hnhdigital-os/laravel-number-converter/issues",
+                "source": "https://github.com/hnhdigital-os/laravel-number-converter/tree/1.4.0"
+            },
+            "time": "2020-11-11T10:36:37+00:00"
+        },
+        {
+            "name": "hnhdigital-os/php-number-converter",
+            "version": "1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hnhdigital-os/php-number-converter.git",
+                "reference": "92a256430b781124161df61fcce2a9340d08ac9e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hnhdigital-os/php-number-converter/zipball/92a256430b781124161df61fcce2a9340d08ac9e",
+                "reference": "92a256430b781124161df61fcce2a9340d08ac9e",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2"
+            },
+            "require-dev": {
+                "phpmd/phpmd": "~2.0",
+                "phpunit/phpunit": "^7.0",
+                "squizlabs/php_codesniffer": "~3.0",
+                "symfony/thanks": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "HnhDigital\\PhpNumberConverter\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Riasad Tasha",
+                    "email": "saintkabyo@gmail.com"
+                },
+                {
+                    "name": "Rocco Howard",
+                    "email": "rocco@hnh.digital"
+                }
+            ],
+            "description": "Number to word, roman, ordinal converter",
+            "keywords": [
+                "converter",
+                "number",
+                "ordinal",
+                "roman",
+                "word"
+            ],
+            "support": {
+                "source": "https://github.com/hnhdigital-os/php-number-converter/tree/master"
+            },
+            "time": "2020-09-01T11:26:46+00:00"
+        },
+        {
             "name": "intervention/image",
             "version": "2.5.1",
             "source": {
@@ -1548,6 +1665,59 @@
                 "watermark"
             ],
             "time": "2019-11-02T09:15:47+00:00"
+        },
+        {
+            "name": "kwn/number-to-words",
+            "version": "1.12.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kwn/number-to-words.git",
+                "reference": "7461b531a971eb6b75a687eb28787b79dad09eb1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kwn/number-to-words/zipball/7461b531a971eb6b75a687eb28787b79dad09eb1",
+                "reference": "7461b531a971eb6b75a687eb28787b79dad09eb1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6|>=7.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7.9",
+                "squizlabs/php_codesniffer": "^3.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "NumberToWords\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Karol Wnuk",
+                    "email": "k.wnuk@ascetic.pl"
+                }
+            ],
+            "description": "Multi language standalone PHP number to words converter. Fully tested, open for extensions and new languages.",
+            "keywords": [
+                "currency",
+                "money",
+                "number",
+                "numbers",
+                "string",
+                "to",
+                "words"
+            ],
+            "support": {
+                "issues": "https://github.com/kwn/number-to-words/issues",
+                "source": "https://github.com/kwn/number-to-words/tree/1.12.1"
+            },
+            "time": "2021-01-20T08:23:47+00:00"
         },
         {
             "name": "laracasts/flash",
@@ -7640,5 +7810,6 @@
     "platform": {
         "php": "^7.3.0"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.0.0"
 }

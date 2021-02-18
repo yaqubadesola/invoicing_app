@@ -1,3 +1,11 @@
+<?php 
+use NumberToWords\NumberToWords; 
+// create the number to words "manager" class
+$numberToWords = new NumberToWords();
+
+// build a new currency transformer using the RFC 3066 language identifier
+$currencyTransformer = $numberToWords->getCurrencyTransformer('en');
+?>
 <!DOCTYPE html>
 <html lang="en"><head>
     <meta charset="UTF-8">
@@ -8,7 +16,8 @@
         @if($invoice->pdf_logo != '')
             <img src="{{ $invoice->pdf_logo }}" alt="logo" style="max-width: 90%"/>
         @endif
-    </div>
+        <div style="font-size:10px; text-align:center"><b>Generators || Transformer || Inverters
+            || UPS || ELV Panels <br>   Distribution Boards  &amp; Installation Accessories</b></div> </div>
     <div class="text-right" style="width:300px;height:130px;float:right;">
         <div class="text-right"> <h2>{{trans('application.invoice')}}</h2></div>
         <table style="width: 100%">
@@ -139,23 +148,63 @@
                     <span id="grandTotal">{{ format_amount($invoice->totals['paidFormatted']) }}</span>
                 </td>
             </tr>
+            @if($invoice->totals['amountDue'] > 0)
             <tr class="amount_due">
                 <th class="text-right">{{trans('application.amount_due')}}:</th>
                 <td class="text-right">
                     <span id="grandTotal">{{ $invoice->currency.' '.format_amount($invoice->totals['amountDue']) }}</span>
                 </td>
             </tr>
+            @endif
         </table>
     </div>
     <div class="col-md-12">
-        @if($invoice->notes)
-            <h4 class="invoice_title">{{trans('application.notes')}}</h4><hr class="separator"/>
-            {!! htmlspecialchars_decode($invoice->notes,ENT_QUOTES) !!} <br/>
-        @endif
-        @if($invoice->terms)
-            <h4 class="invoice_title">{{trans('application.terms')}}</h4><hr class="separator"/>
-            {!! htmlspecialchars_decode($invoice->terms,ENT_QUOTES) !!}
-        @endif
+        <h4><b>Amount in words</b><br>
+            <span style="font-family: 'Arial Narrow', Arial, sans-serif; 12px">
+                <?php
+                $amount_in_word = '';
+                //$amount_in_word = $currencyTransformer->toWords($invoice->totals['amountDue']*100, 'NGN');
+                $actual_amt = $invoice->totals['grandTotal'];
+                $converted_amt = NumConvert::word($actual_amt);
+                if (strpos($converted_amt, 'point') !== false) {
+                    
+                    $stop = strpos($converted_amt, 'point');
+                    $amount_in_word = substr($converted_amt, 0,  $stop);
+                    $amount_in_word = $amount_in_word . " naira "; 
+                    //getting decimal point
+                    $decimal_pos = strpos($actual_amt, '.');
+                    //echo "act val = $actual_amt..string pos = $decimal_pos<br> ";
+                    $decimal  = substr($actual_amt, $decimal_pos+1);
+                    //echo "I am decimal = $decimal<br> ";
+                    if(substr($decimal,1,-1) != "0"){
+                        $amount_in_word = $amount_in_word . NumConvert::word($decimal) . " kobo";
+                    }
+                    else{
+                        $amount_in_word = $amount_in_word . NumConvert::word($decimal*10) . " kobo";
+                    }
+
+                   
+                }
+                else{
+                    $amount_in_word = $converted_amt . " naira only";
+                }
+                ?>
+
+                <i>{{ ucfirst($amount_in_word)}}</i>
+            </span>
+        </h4> 
+    </div>
+    <div class="col-md-12">
+        <small>
+            @if($invoice->notes)
+                <h4 class="invoice_title">{{trans('application.notes')}}</h4><hr class="separator"/>
+                {!! htmlspecialchars_decode($invoice->notes, ENT_QUOTES) !!}
+            @endif
+            @if($invoice->terms)
+                <h4 class="invoice_title">{{trans('application.terms')}}</h4><hr class="separator"/>
+                {!! htmlspecialchars_decode($invoice->terms, ENT_QUOTES) !!}
+            @endif
+        </small>
     </div>
     @if($invoice->totals['amountDue'] > 0 && $invoiceSettings->show_pay_button)
         <div class="col-md-12" style="margin-top:20px;text-align: right">

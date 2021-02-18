@@ -21,7 +21,7 @@
             </div>
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="info-box">
-                    <i class="fa fa-usd bg-aqua"></i>
+                    <i class="fa fa-ngn bg-aqua">&#8358;</i>
                     <span class="info-box-text">{{ trans('application.payments') }}</span>
                     <span class="info-box-number" style="color: #00a65a;">{{ $total_payments }}</span>
                 </div>
@@ -40,7 +40,7 @@
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-xs-3">
-                                <i class="fa fa-usd fa-3x"></i>
+                                <i class="fa fa-ngn fa-3x">&#8358;</i>
                             </div>
                             <div class="col-xs-9 text-right">
                                 <p class="info-box-number">{{ $invoice_stats['partiallyPaid'] }}</p>

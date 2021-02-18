@@ -143,6 +143,7 @@
                                                 <span id="grandTotal">{{ format_amount($invoice->totals['paidFormatted']) }}</span>
                                             </td>
                                         </tr>
+                                        @if($invoice->totals['amountDue'] >= 0)
                                         <tr class="amount_due">
                                             <th>{{trans('application.amount_due')}}:</th>
                                             <td class="text-right">
@@ -150,6 +151,7 @@
                                                 <span id="amountDue">{{ $invoice->totals['amountDue'] }}</span>
                                             </td>
                                         </tr>
+                                        @endif
                                         </tbody></table>
                                 </div>
                             </div>

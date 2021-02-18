@@ -26,7 +26,11 @@ class InvoicerMailerJob implements ShouldQueue
     public function handle()
     {
         try {
-            Mail::to($this->params['to'])->send(new InvoicerMailer($this->params));
+            Mail::to($this->params['to'])
+            ->cc($this->params['cc'])
+            ->bcc($this->params['bcc'])
+            ->send(new InvoicerMailer($this->params));
+        
         }
         catch (\Exception $e) {
             throw $e;

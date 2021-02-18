@@ -19,7 +19,9 @@
         "facade/ignition": "^2.3.6",
         "barryvdh/laravel-translation-manager": "^0.5.8",
         "laravel/ui": "^3.0",
-        "guzzlehttp/guzzle": "^7.2"
+        "guzzlehttp/guzzle": "^7.2",
+        "kwn/number-to-words": "^1.12",
+        "hnhdigital-os/laravel-number-converter": "^1.4"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.4",

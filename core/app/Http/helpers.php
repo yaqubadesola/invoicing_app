@@ -5,6 +5,7 @@ use Illuminate\Support\Str;
 use App\Jobs\InvoicerMailerJob;
 if (!function_exists('sendmail')) {
     function sendmail(array $data) {
+        //dd($data);
         try {
             dispatch(new InvoicerMailerJob($data));
         } catch (\Exception $e) {
