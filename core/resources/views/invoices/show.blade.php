@@ -100,14 +100,22 @@ $currencyTransformer = $numberToWords->getCurrencyTransformer('en');
                             </div>
                             <div class="col-md-12">
                             <table class="table">
-                                <thead style="margin-bottom:30px;background: #2e3e4e;color: #fff;">
-                                <tr>
-                                    <th style="width:50%">{{trans('application.product')}}</th>
-                                    <th style="width:10%" class="text-center">{{trans('application.quantity')}}</th>
-                                    <th style="width:15%" class="text-right">{{trans('application.price')}}</th>
-                                    <th style="width:10%" class="text-center">{{trans('application.tax')}}</th>
-                                    <th style="width:15%" class="text-right">{{trans('application.total')}}</th>
-                                </tr>
+                                <thead>
+                                    <tr>
+                                        <th style="width:100%;font-size:20px; text-align:center;color:#015882" colspan="5">
+                                           {{--  <span style="border:2px red solid; border-radius:10px;padding:5px"> --}}
+                                            <span style="text-decoration:underline; padding:5px">
+                                                {{$invoice->invoice_title}}
+                                            </span>
+                                        </th>
+                                    </tr>
+                                    <tr style="margin-bottom:30px;background: #2e3e4e;color: #fff;">
+                                        <th style="width:50%">{{trans('application.product')}}</th>
+                                        <th style="width:10%" class="text-center">{{trans('application.quantity')}}</th>
+                                        <th style="width:15%" class="text-right">{{trans('application.price')}}</th>
+                                        <th style="width:10%" class="text-center">{{trans('application.tax')}}</th>
+                                        <th style="width:15%" class="text-right">{{trans('application.total')}}</th>
+                                    </tr>
                                 </thead>
                                 <tbody id="items">
                                 @foreach($invoice->items->sortBy('item_order') as $item)

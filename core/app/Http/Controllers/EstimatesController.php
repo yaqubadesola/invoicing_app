@@ -114,14 +114,18 @@ class EstimatesController extends Controller {
     public function store(EstimateFormRequest $request)
 	{
         $estimateData = array(
-            'client_id'     => $request->get('client'),
-            'estimate_no'   => $request->get('estimate_no'),
-            'estimate_date' => date('Y-m-d', strtotime($request->get('estimate_date'))),
-            'notes'         => $request->get('notes'),
-            'terms'         => $request->get('terms'),
-            'currency'      => $request->get('currency')
+            'client_id'         => $request->get('client'),
+            'estimate_no'       => $request->get('estimate_no'),
+            'estimate_date'     => date('Y-m-d', strtotime($request->get('estimate_date'))),
+            'estimate_title'    => $request->get('estimate_title'),
+            'terms'             => $request->get('terms'),
+            'notes'             => $request->get('notes'),
+            'terms'             => $request->get('terms'),
+            'currency'          => $request->get('currency')
         );
+
         $estimate = $this->estimate->create($estimateData);
+
         if($estimate){
             $items = json_decode($request->get('items'));
             foreach($items as $item_order=>$item){
@@ -188,8 +192,9 @@ class EstimatesController extends Controller {
 	public function update(EstimateFormRequest $request, $uuid)
 	{
         $estimateData = array(
-            'client_id'     => $request->get('client'),
-            'estimate_no'   => $request->get('estimate_no'),
+            'client_id'      => $request->get('client'),
+            'estimate_no'    => $request->get('estimate_no'),
+            'estimate_title' => $request->get('estimate_title'),
             'estimate_date' => date('Y-m-d', strtotime($request->get('estimate_date'))),
             'notes'         => $request->get('notes'),
             'terms'         => $request->get('terms'),
@@ -237,41 +242,47 @@ class EstimatesController extends Controller {
         if($estimate){
             $settings = $this->setting->first();
             $estimate_settings = $this->estimateSetting->first();
+            #dd($estimate_settings);
             $estimate->estimate_logo = $estimate_settings && $estimate_settings->logo ? base64_img(config('app.images_path').$estimate_settings->logo) : '';
             $pdf = PDF::loadView('estimates.pdf', compact('settings', 'estimate','estimate_settings'));
             return $pdf->download('estimate_'.$estimate->estimate_no.'_'.date('Y-m-d').'.pdf');
         }
         return Redirect::route('estimates.index');
     }
+
     public function send_modal($uuid){
         $estimate = $this->estimate->getById($uuid);
+        #dd($estimate);
         $template = $this->template->where('name', 'estimate')->first();
         return view('estimates.send_modal',compact('estimate','template'));
     }
+
     public function send(SendEmailFrmRequest $request){
-        try {
         $uuid = $request->get('estimate_id');
         $estimate = $this->estimate->getById($uuid);
         $settings = $this->setting->first();
         $estimate_settings = $this->estimateSetting->first();
         $data_object = new \stdClass();
-        $data_object->settings  = $settings;
-        $data_object->client    = $estimate->client;
-        $data_object->user = $estimate->client;
-        $estimate->estimate_logo = $estimate_settings && $estimate_settings->logo ? base64_img(config('app.images_path').$estimate_settings->logo) : '';
+        $data_object->settings      = $settings;
+        $data_object->client        = $estimate->client;
+        $data_object->user          = $estimate->client;
+        $estimate->estimate_logo    = $estimate_settings && $estimate_settings->logo ? base64_img(config('app.images_path').$estimate_settings->logo) : '';
         $pdf_name = 'estimate_' . $estimate->estimate_no . '_' . date('Y-m-d') . '.pdf';
-        PDF::loadView('estimates.pdf', compact('settings', 'estimate', 'estimates_settings'))->save(config('app.assets_path').'attachments/'.$pdf_name);
+        PDF::loadView('estimates.pdf', compact('settings', 'estimate', 'estimate_settings'))->save(config('app.assets_path').'attachments/'.$pdf_name);
         $params = [
             'data' => [
-                'emailBody'=>parse_template($data_object, $request->get('message')),
-                'emailTitle'=>parse_template($data_object,$request->get('subject')),
-                'attachment' => config('app.assets_path').'attachments/'.$pdf_name
+                'emailBody'     =>  parse_template($data_object, $request->get('message')),
+                'emailTitle'    =>  parse_template($data_object,$request->get('subject')),
+                'attachment'    =>  config('app.assets_path').'attachments/'.$pdf_name
             ],
-            'to' => $request->get('email'),
+            'to'            => $request->get('email'),
+            'cc'            => $request->get('cc_email'),
+            'bcc'           => $request->get('bcc_email'),
             'template_type' => 'markdown',
-            'template' => 'emails.invoicer-mailer',
-            'subject' => parse_template($data_object,$request->get('subject'))
+            'template'      => 'emails.invoicer-mailer',
+            'subject'       => parse_template($data_object,$request->get('subject'))
         ];
+        try {
             sendmail($params);
             Flash::success(trans('application.email_sent'));
             return response()->json(['type' => 'success','message' => trans('application.email_sent')]);
@@ -305,12 +316,12 @@ class EstimatesController extends Controller {
             $items = $estimate->items;
             foreach ($items as $item) {
                 $itemsData = array(
-                    'invoice_id' => $invoice->uuid,
-                    'item_name' => $item->item_name,
-                    'item_description' => $item->item_description,
-                    'quantity' => $item->quantity,
-                    'price' => $item->price,
-                    'tax_id' => $item->tax != '' ? $item->tax->uuid : null,
+                    'invoice_id'        => $invoice->uuid,
+                    'item_name'         => $item->item_name,
+                    'item_description'  => $item->item_description,
+                    'quantity'          => $item->quantity,
+                    'price'             => $item->price,
+                    'tax_id'            => $item->tax != '' ? $item->tax->uuid : null,
                 );
                 $this->invoiceItem->create($itemsData);
             }

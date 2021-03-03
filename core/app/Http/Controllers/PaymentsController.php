@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\View\View;
 use Laracasts\Flash\Flash;
 use Yajra\DataTables\DataTables;
+use App\Models\User; 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class PaymentsController extends Controller {
     protected $payment, $invoice,$paymentmethod;
@@ -24,19 +27,32 @@ class PaymentsController extends Controller {
 	{
         if (Request::ajax()){
             $model = $this->payment->model();
-            $payments = $model::select('uuid','invoice_id','payment_date','amount','method')->ordered();
+          
+            if(auth()->guard('admin')->user()->role->name == "admin"){
+                $payments = $model::select('uuid','invoice_id','payment_date','user_id','amount','method')->ordered();
+                //dd($payments);
+            }else{
+                $user_id = auth()->guard('admin')->user()['uuid'];
+                $payments = $model::where("user_id","=",$user_id)->get();
+            }
             return DataTables::of($payments)
                 ->editColumn('number', function($data){ return '<a href="'.route('invoices.show', $data->invoice_id).'">'.$data->invoice->number.'</a>'; })
                 ->editColumn('client', function($data){ return '<a href="'.route('clients.show', $data->invoice->client_id).'">'.$data->invoice->client->name.'</a>'; })
                 ->editColumn('payment_method', function($data){ return $data->payment_method->name; })
+                ->editColumn('user_id', function($data){ 
+                    
+                    $user_rec = User::findOrFail($data->user_id);
+                    return '<span style="display:inline-block">'.$user_rec['name'].'</span>'; 
+                
+                })
                 ->editColumn('amount', function($data){
                     return '<span style="display:inline-block">'.$data->invoice->currency.'</span> <span style="display:inline-block"> '.format_amount($data->amount).'</span>';
                 })
-                ->addColumn('action', '
+               ->addColumn('action', '
                      @if(hasPermission(\'edit_payment\')){!! edit_btn(\'payments.edit\', $uuid) !!}@endif
                      @if(hasPermission(\'delete_payment\')){!! delete_btn(\'payments.destroy\', $uuid) !!}@endif
                 ')
-                ->rawColumns(['number','client','amount','action'])
+                ->rawColumns(['number','client','user_id','amount','action'])
                 ->make(true);
         }else {
             return view('payments.index');
@@ -69,11 +85,12 @@ class PaymentsController extends Controller {
     public function store(PaymentFormRequest $request)
 	{
 		$payment = [
-            'invoice_id' => $request->get('invoice_id'),
-            'payment_date' => date('Y-m-d', strtotime($request->get('payment_date'))),
-            'amount' => $request->get('amount'),
-            'method' => $request->get('method'),
-            'notes' => $request->get('notes')
+            'invoice_id'    => $request->get('invoice_id'),
+            'payment_date'  => date('Y-m-d', strtotime($request->get('payment_date'))),
+            'amount'        => $request->get('amount'),
+            'method'        => $request->get('method'),
+            'notes'         => $request->get('notes'),
+            'user_id'       => auth()->guard('admin')->user()['uuid'],
         ];
 
         if($this->payment->create($payment)){
@@ -109,10 +126,11 @@ class PaymentsController extends Controller {
 	public function update(PaymentFormRequest $request, $id)
 	{
         $payment = [
-            'payment_date' => date('Y-m-d', strtotime($request->get('payment_date'))),
-            'amount' => $request->get('amount'),
-            'method' => $request->get('method'),
-            'notes' => $request->get('notes')
+            'payment_date'  => date('Y-m-d', strtotime($request->get('payment_date'))),
+            'amount'        => $request->get('amount'),
+            'method'        => $request->get('method'),
+            'notes'         => $request->get('notes'),
+            'user_id'       => auth()->guard('admin')->user()['uuid'],
         ];
         if($request->get('invoice_id') != ''){
             $payment['invoice_id'] = $request->get('invoice_id');

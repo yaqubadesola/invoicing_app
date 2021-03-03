@@ -22,6 +22,8 @@ return array (
   'website' => 'Website',
   'notes' => 'Remarks',
   'invoices' => 'Invoices',
+  'invoice_title' => 'Invoice Title',
+  'estimate_title' => 'Quotation Title',
   'invoice_number' => 'Invoice Number',
   'status' => 'Status',
   'date' => 'Date',

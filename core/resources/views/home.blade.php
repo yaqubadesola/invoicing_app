@@ -1,9 +1,11 @@
 @extends('app')
 @section('content')
+
     <div class="col-md-12 content-header" >
         <h1><i class="fa fa-dashboard"></i> {{ trans('application.dashboard') }}</h1>
     </div>
     <section class="content">
+        @if(!empty($user) && $user->role['name'] == "admin")
         <div class="row">
             <div class="col-lg-3 col-sm-6 col-xs-12">
                 <div class="info-box">
@@ -119,6 +121,7 @@
                 </div>
             </div>
         </div>
+        @endif
         <div class="row">
             <div class="col-md-12">
                 <div class="box box-primary">
@@ -140,12 +143,19 @@
                             </tr>
                             </thead>
                             <tbody>
+                                <?php $x = 1; ?>
                             @foreach($recentInvoices as $count=>$invoice)
-                                <tr>
-                                    <td>{{ $count+1 }}</td>
+                                @if($user->role['name'] != "admin" && $user['uuid'] != $invoice->user_id)
+                                @continue
+                                @endif
+                                <tr><?php 
+                                        $client_rec = \App\Models\Client::where("uuid",$invoice->client_id)->get();
+                                    ?>
+                                    <td>{{ $x++ }}
+                                    </td>
                                     <td><a href="{{ route('invoices.show', $invoice->uuid) }}">{{ $invoice->number }}</a> </td>
                                     <td><span class="label {{ statuses()[$invoice->status]['class'] }}">{{ ucwords(statuses()[$invoice->status]['label']) }} </span></td>
-                                    <td><a href="{{route('clients.show', $invoice->client_id) }}">{{ $invoice->client->name ?? '' }}</a> </td>
+                                    <td><a href="{{route('clients.show', $invoice->client_id) }}">{{ $client_rec[0]['name'] ?? '' }}</a> </td>
                                     <td>{{ $invoice->invoice_date }} </td>
                                     <td>{{ $invoice->due_date }} </td>
                                     <td>{!! '<span style="display:inline-block">'.$invoice->currency.'</span><span style="display:inline-block"> '.format_amount($invoice->totals['grandTotal']).'</span>' !!} </td>
@@ -181,11 +191,19 @@
                             </tr>
                             </thead>
                             <tbody>
+                            <?php $y = 1; ?>
                             @foreach($recentEstimates as $count=>$estimate)
+
+                                @if($user->role['name'] != "admin" && $user['uuid'] != $invoice->user_id)
+                                @continue
+                                @endif
                                 <tr>
-                                    <td>{{ $count+1 }}</td>
+                                    <?php 
+                                        $client_rec = \App\Models\Client::where("uuid",$estimate->client_id)->get();
+                                    ?>
+                                    <td>{{ $y++ }}</td>
                                     <td><a href="{{ route('estimates.show', $estimate->uuid) }}">{{ $estimate->estimate_no }} </a></td>
-                                    <td><a href="{{ route('clients.show', $estimate->client_id) }}">{{ $estimate->client->name ?? '' }}</a> </td>
+                                    <td><a href="{{ route('clients.show', $estimate->client_id) }}">{{ $client_rec[0]['name'] ?? '' }}</a> </td>
                                     <td>{{ $estimate->estimate_date }} </td>
                                     <td>{!! '<span style="display:inline-block">'.$estimate->currency.'</span><span style="display:inline-block"> '.format_amount($estimate->totals['grandTotal']).'</span>' !!} </td>
                                     <td>

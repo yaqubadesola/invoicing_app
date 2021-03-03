@@ -73,6 +73,18 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-3" >
+                                    <div class="form-group text-right">
+                                    {!! Form::label('invoice_title', trans('application.invoice_title')) !!}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {!! Form::text('invoice_title',$invoice->invoice_title, ['class' => 'form-control input-sm' , 'id' => 'invoice_title']) !!}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                </div>
                                 <div class="col-md-12">
                                     <table class="table table-striped" id="item_table">
                                         <thead style="background: #2e3e4e;color: #fff;">

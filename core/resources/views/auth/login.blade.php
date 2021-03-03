@@ -16,7 +16,7 @@
         <div class="form-group">
             {!! Form::Submit('Login', ['class'=>"btn btn-primary login-button btn-sm form-control"]) !!}
         </div>
-        <a href="{{ url('clientarea/login') }}" class="btn btn-success btn-sm pull-right" target="_blank"> Access Client Area</a>
+        <a style="display:none" href="{{ url('clientarea/login') }}" class="btn btn-success btn-sm pull-right" target="_blank"> Access Client Area</a>
         <div class="clearfix"></div>
         {!! Form::close() !!}
     </section>

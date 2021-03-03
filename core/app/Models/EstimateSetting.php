@@ -3,7 +3,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Traits\UuidModel;
 class EstimateSetting extends Model {
     use UuidModel;
-    public $incrementing = false;
+    public $incrementing  = false;
     protected $primaryKey = 'uuid';
-    protected $fillable = ['start_number', 'terms', 'logo'];
+    protected $fillable   = ['start_number', 'terms', 'logo'];
 }

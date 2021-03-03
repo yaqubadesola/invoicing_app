@@ -57,19 +57,19 @@ Route::group(['middleware' => 'install'], function(){
     Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
     Route::post('password/reset', 'Auth\ResetPasswordController@reset');
     Route::get('recurring', 'RecurringInvoicesController@index');
-    Route::group(['middleware' => 'auth'], function(){
+    Route::group(['middleware' => 'auth:admin'], function(){
         #home controller
         Route::get('/',   'HomeController@index')->name('home');
         Route::get('home','HomeController@index');
         #Resources Routes
         Route::resources([
-            'users'     => 'UsersController',
-            'clients'   => 'ClientsController',
-            'invoices'  => 'InvoicesController',
-            'products'  => 'ProductsController',
-            'expenses'  => 'ExpensesController',
-            'estimates' => 'EstimatesController',
-            'payments'  => 'PaymentsController',
+            'users'             => 'UsersController',
+            'clients'           => 'ClientsController',
+            'invoices'          => 'InvoicesController',
+            'products'          => 'ProductsController',
+            'expenses'          => 'ExpensesController',
+            'estimates'         => 'EstimatesController',
+            'payments'          => 'PaymentsController',
             'product_category'  => 'ProductCategoryController',
             'expense_category'  => 'ExpenseCategoryController',
         ]);

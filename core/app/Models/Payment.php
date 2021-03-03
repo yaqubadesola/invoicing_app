@@ -5,7 +5,7 @@ class Payment extends Model {
     use UuidModel;
     public $incrementing = false;
     protected $primaryKey = 'uuid';
-    protected $fillable = ['invoice_id','payment_date','amount','notes','method'];
+    protected $fillable = ['invoice_id','payment_date','user_id','amount','notes','method'];
 
     public function invoice(){
         return $this->belongsTo(Invoice::class,'invoice_id');

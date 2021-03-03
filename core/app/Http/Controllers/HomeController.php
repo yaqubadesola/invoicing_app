@@ -1,5 +1,6 @@
-<?php namespace App\Http\Controllers;
-
+<?php 
+namespace App\Http\Controllers;
+//namespace App\Http\Controllers\Auth;
 use App\Invoicer\Repositories\Contracts\InvoiceInterface as Invoice;
 use App\Invoicer\Repositories\Contracts\ProductInterface as Product;
 use App\Invoicer\Repositories\Contracts\ClientInterface as Client;
@@ -8,6 +9,11 @@ use App\Invoicer\Repositories\Contracts\EstimateInterface as Estimate;
 use App\Invoicer\Repositories\Contracts\PaymentInterface as Payment;
 use App\Invoicer\Repositories\Contracts\ExpenseInterface as Expense;
 use Illuminate\View\View;
+use Illuminate\Http\Request;
+use App\Models\User; 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+
 
 class HomeController extends Controller {
     protected $invoice, $product, $client, $estimate, $payment, $expense, $setting;
@@ -22,7 +28,9 @@ class HomeController extends Controller {
         $this->estimate     = $estimate;
         $this->payment      = $payment;
         $this->expense      = $expense;
-        $this->setting      = $setting;
+        $this->setting      = $setting; 
+   
+       
     }
 
     /**
@@ -30,9 +38,12 @@ class HomeController extends Controller {
      *
      * @return View
      */
-    public function index()
+    public function index(Request $request)
     {   
-        //Getting Company/Client Settings Details
+        //getting authenticated user role name for basic restriction
+        //$user_role = auth()->guard('admin')->user()->role;
+        $user = auth()->guard('admin')->user();
+        //dd($user);
         if($this->setting->count() > 0)
             $setting = $this->setting->first();
         else
@@ -40,7 +51,7 @@ class HomeController extends Controller {
 
         $clients = $this->client->count();
         $invoices = $this->invoice->count();
-        $estimates = $this->estimate->count();
+        $estimates = $this->estimate->count();//dd($invoices);
         $products = $this->product->count();
         $recentInvoices = $this->invoice->with('client')->limit(10)->get();
         $recentEstimates = $this->estimate->with('client')->limit(10)->get();
@@ -74,6 +85,6 @@ class HomeController extends Controller {
             array_push($expenses, $expense);
         }
         $yearly_expense = json_encode($expenses, JSON_HEX_QUOT | JSON_HEX_APOS);
-        return view('home', compact('setting','clients','invoices','products','estimates','recentInvoices','recentEstimates', 'invoice_stats','yearly_income','yearly_expense','total_payments','total_outstanding'));
+        return view('home', compact('setting','clients','invoices','products','estimates','recentInvoices','recentEstimates', 'invoice_stats','yearly_income','yearly_expense','total_payments','total_outstanding'))->with('user',$user);
     }
 }

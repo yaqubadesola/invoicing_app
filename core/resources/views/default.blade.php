@@ -20,7 +20,7 @@
 <body class="login-page">
 <div class="login-box">
     <div class="login-logo">
-        {{get_company_name()}}
+        {{explode(" ",get_company_name())[0]." ".explode(" ",get_company_name())[1]}}
     </div><!-- /.login-logo -->
     <div class="login-box-body">
         @yield('content')

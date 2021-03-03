@@ -7,7 +7,7 @@ class Invoice extends Model {
     use UuidModel;
     public $incrementing = false;
     protected $primaryKey = 'uuid';
-    protected $fillable = ['client_id', 'number', 'invoice_date', 'due_date', 'status', 'discount', 'terms', 'notes', 'currency','discount_mode','recurring','recurring_cycle'];
+    protected $fillable = ['client_id', 'number', 'user_id','invoice_title', 'invoice_date', 'due_date', 'status', 'discount', 'terms', 'notes', 'currency','discount_mode','recurring','recurring_cycle'];
     protected $appends = ['totals'];
     public function client(){
         return $this->belongsTo(Client::class, 'client_id');

@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\View\View;
 use Laracasts\Flash\Flash;
 use Yajra\DataTables\DataTables;
+use App\Models\User; 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+
 class ClientsController extends Controller {
     private $client, $invoice, $estimate, $number;
     public function __construct(Client $client, Invoice $invoice, Estimate $estimate, Number $number){
@@ -21,9 +25,21 @@ class ClientsController extends Controller {
     public function index()
     {
         if (Request::ajax()) {
+            
+            $admin = false;
+            if(auth()->guard('admin')->user()->role->name == "admin"){
+                //dd(auth()->guard('admin')->user()->role->name);
+                $admin = true;
+            }
             $model = $this->client->model();
             $clients = $model::select('client_no','name','email','phone','country','photo','uuid')->ordered();
-            return DataTables::of($clients)
+            $newClients = array();
+            foreach($clients as $client){
+                $client['admin'] = $admin;
+                array_push($newClients,$client);
+            }
+            //dd($newClients);
+            return DataTables::of($newClients)
                 ->editColumn('photo',function($row){
                     $photo = $row->photo != '' ? 'uploads/client_images/'.$row->photo : 'uploads/no-image.jpg';
                     return \Html::image(image_url($photo),'Image',['class'=>'img-circle','width'=>'36px']);
@@ -32,7 +48,7 @@ class ClientsController extends Controller {
                      {!! addquote_btn(\'client_estimate\', $uuid) !!} 
                      {!! addinv_btn(\'client_invoice\', $uuid) !!} 
                      {!! show_btn(\'clients.show\', $uuid) !!} 
-                     @if(hasPermission(\'edit_client\')) {!! edit_btn(\'clients.edit\', $uuid) !!}@endif
+                     @if(hasPermission(\'edit_client\') && $admin) {!! edit_btn(\'clients.edit\', $uuid) !!}@endif
                      @if(hasPermission(\'delete_client\')) {!! delete_btn(\'clients.destroy\', $uuid) !!}@endif
                 ')
                 ->rawColumns(['photo','action'])

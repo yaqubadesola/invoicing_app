@@ -6,7 +6,7 @@ class Expense extends Model {
     public $incrementing = false;
     protected $primaryKey = 'uuid';
 
-    protected $fillable = ['name', 'vendor','category_id','amount', 'notes', 'expense_date','currency'];
+    protected $fillable = ['name', 'vendor','category_id','amount','user_id', 'notes', 'expense_date','currency'];
 
     public function category(){
         return $this->belongsTo(ExpenseCategory::class, 'category_id');

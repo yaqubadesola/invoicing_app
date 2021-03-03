@@ -6,6 +6,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
+use Illuminate\Support\Facades\Auth;
+
 class AuthController extends Controller {
 	/*
 	|--------------------------------------------------------------------------
@@ -45,6 +47,7 @@ class AuthController extends Controller {
     }
 	public function postLogin(Request $request){
 		// get our login input
+		//	dd($request->all());
 		$login = $request->input('login');
 		// check login field
 		$login_type = filter_var( $login, FILTER_VALIDATE_EMAIL ) ? 'email' : 'username';
@@ -64,11 +67,13 @@ class AuthController extends Controller {
 			]);
 			$credentials = $request->only( 'username', 'password' );
 		}
+
 		if (auth()->guard('admin')->attempt($credentials)){
 			return redirect()->route('home');
 		}
         return redirect()->back()->withInput($request->only('login', 'remember'))->withErrors(['login' => 'Invalid Login Credentials !']);
 	}
+
     public function getLogout(){
         auth()->guard('admin')->logout();
         return redirect()->route('admin_login');

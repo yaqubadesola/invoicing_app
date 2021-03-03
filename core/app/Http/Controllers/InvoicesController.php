@@ -22,6 +22,10 @@ use Laracasts\Flash\Flash;
 use Yajra\DataTables\DataTables;
 use PDF;
 use Mail;
+use App\Models\User; 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+
 
 
 class InvoicesController extends Controller {
@@ -43,9 +47,17 @@ class InvoicesController extends Controller {
 
 	public function index()
 	{
+        
         if (Request::ajax()) {
             $model = $this->invoice->model();
-            $invoices = $model::select('client_id','number','status','due_date','uuid','currency')->ordered();
+            if(auth()->guard('admin')->user()->role->name == "admin"){
+                $invoices = $model::select('client_id','number','status','due_date','uuid','currency')->ordered();
+            }else{
+                $user_id = auth()->guard('admin')->user()['uuid'];
+                $invoices = $model::where("user_id","=",$user_id)->get();
+                //dd($invoices);
+            }
+            //$invoices = $model::select('client_id','number','status','due_date','uuid','currency')->ordered();
             return DataTables::of($invoices)
                 ->editColumn('name', function($data){ return '<a href="'.route('clients.show', $data->client_id).'">'.$data->client->name ?? ''.'</a>'; })
                 ->editColumn('status', function($data){ return '<span class="label '.statuses()[$data->status]['class'].'">'.ucwords(statuses()[$data->status]['label']).'</span>'; })
@@ -116,12 +128,15 @@ class InvoicesController extends Controller {
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function store(InvoiceFromRequest $request)
-	{
+	{    
+        
 	    $due_date = $request->get('due_date');
         $invoiceData = array(
             'client_id'     => $request->get('client'),
             'number'        => $request->get('number'),
+            'user_id'       => auth()->guard('admin')->user()['uuid'],
             'invoice_date'  => date('Y-m-d', strtotime($request->get('invoice_date'))),
+            'invoice_title' => $request->get('invoice_title'),
             'notes'         => $request->get('notes'),
             'terms'         => $request->get('terms'),
             'currency'      => $request->get('currency'),
@@ -134,6 +149,7 @@ class InvoicesController extends Controller {
         if($due_date != ''){
             $invoiceData['due_date'] = date('Y-m-d', strtotime($request->get('due_date')));
         }
+        
         $invoice = $this->invoice->create($invoiceData);
         if($invoice){
             $items = json_decode($request->get('items'));
@@ -228,12 +244,14 @@ class InvoicesController extends Controller {
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function update(InvoiceFromRequest $request, $uuid)
-	{
+	{   
         $due_date = $request->get('due_date');
         $invoiceData = array(
             'client_id'     => $request->get('client'),
             'number'        => $request->get('number'),
+            'user_id'       => auth()->guard('admin')->user()['uuid'],
             'invoice_date'  => date('Y-m-d', strtotime($request->get('invoice_date'))),
+            'invoice_title' => $request->get('invoice_title'),
             'notes'         => $request->get('notes'),
             'terms'         => $request->get('terms'),
             'currency'      => $request->get('currency'),
@@ -246,6 +264,7 @@ class InvoicesController extends Controller {
         if($due_date != ''){
             $invoiceData['due_date'] = date('Y-m-d', strtotime($request->get('due_date')));
         }
+        //dd($invoiceData);
         $invoice = $this->invoice->updateById($uuid, $invoiceData);
         if($invoice){
             $items = json_decode($request->get('items'));
@@ -395,8 +414,8 @@ class InvoicesController extends Controller {
                 'emailTitle'=>parse_template($data_object,$request->get('subject')),
                 'attachment' => config('app.assets_path').'attachments/'.$pdf_name
             ],
-            'to' => $request->get('email'),
-            'cc' => $request->get('cc_email'),
+            'to'  => $request->get('email'),
+            'cc'  => $request->get('cc_email'),
             'bcc' => $request->get('bcc_email'),
             'template_type' => 'markdown',
             'template' => 'emails.invoicer-mailer',

@@ -9,7 +9,7 @@ class Estimate extends Model {
     public $incrementing = false;
     protected $primaryKey = 'uuid';
     protected $appends = ['totals'];
-    protected  $fillable = ['client_id','estimate_no','estimate_date','currency','notes','terms'];
+    protected  $fillable = ['client_id','estimate_no','estimate_title','estimate_date','currency','notes','terms'];
 
     public function client(){
         return $this->belongsTo(Client::class, 'client_id');

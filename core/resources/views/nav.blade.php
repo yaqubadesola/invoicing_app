@@ -24,9 +24,10 @@
             
             <li class="{{ Form::menu_active('payments') }}"><a href="{{ url('payments') }}"><i class="fa fa-money"></i><span>{{trans('application.payments')}}</span></a></li>
             <li class="{{ Form::menu_active('expenses') }} {{ Form::menu_active('expense_category') }}"><a href="{{ url('expenses') }}"><i class="fa fa-credit-card "></i><span>{{trans('application.expenses')}}</span></a></li>
-           
+            @if(auth()->guard('admin')->user()->role->name == "admin") 
             <li class="{{ Form::menu_active('reports') }}"><a href="{{ url('reports') }}"><i class="fa fa-line-chart"></i> <span>{{trans('application.reports')}}</span></a></li>
             <li class="{{ Form::menu_active('users') }}"><a href="{{ route('users.index') }}"><i class="fa fa-user "></i> <span>{{trans('application.users')}}</span></a></li>
+            @endif
             @if(auth()->guard('admin')->check() && (auth()->guard('admin')->user()->can('edit_setting') || auth()->guard('admin')->user()->HasRole('admin')))
             <li class="{{ Form::menu_active('settings') }}"><a href="{{ url('settings/company') }}"><i class="fa fa-cogs"></i> <span>{{trans('application.settings')}}</span></a></li>
             @endif

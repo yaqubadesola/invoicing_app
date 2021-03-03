@@ -8,6 +8,9 @@ use Illuminate\View\View;
 use Laracasts\Flash\Flash;
 use Yajra\DataTables\DataTables;
 use App\Invoicer\Repositories\Contracts\CurrencyInterface as Currency;
+use App\Models\User; 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ExpensesController extends Controller {
     private $expense,$category,$currency;
@@ -25,10 +28,24 @@ class ExpensesController extends Controller {
 	{
         if (Request::ajax()){
             $model = $this->expense->model();
-            $expenses = $model::select('uuid','name','category_id','expense_date','amount','currency')->ordered();
+            
+            if(auth()->guard('admin')->user()->role->name == "admin"){
+                $expenses = $model::select('uuid','name','category_id','expense_date','user_id','amount','currency')->ordered();
+                //$payments = $model::select('uuid','invoice_id','payment_date','amount','method')->ordered();
+            }else{
+                $user_id  = auth()->guard('admin')->user()['uuid'];
+                $expenses = $model::where("user_id","=",$user_id)->get();
+                //dd($invoices);
+            }
             return DataTables::of($expenses)
                 ->editColumn('expense_date', function($data){ return format_date($data->expense_date); })
                 ->editColumn('category', function($data){ return $data->category ? $data->category->name : ''; })
+                ->editColumn('user_id', function($data){ 
+                    
+                    $user_rec = User::findOrFail($data->user_id);
+                    return $user_rec['name'];
+                
+                })
                 ->editColumn('amount', function($data){ return $data->currency.' '.format_amount($data->amount); })
                 ->addColumn('action', '
                       @if(hasPermission(\'edit_expense\')){!! edit_btn(\'expenses.edit\', $uuid) !!}@endif
@@ -57,8 +74,10 @@ class ExpensesController extends Controller {
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function store(ExpenseFormRequest $request)
-	{
-        if($this->expense->create($request->all())){
+	{   
+        $request_vars = $request->all();
+        $request_vars['user_id'] = auth()->guard('admin')->user()['uuid'];
+        if($this->expense->create($request_vars)){
             Flash::success(trans('application.record_created'));
             return Response::json(array('success'=>true, 'msg' => trans('application.record_created')), 201);
         }
@@ -86,8 +105,10 @@ class ExpensesController extends Controller {
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function update(ExpenseFormRequest $request, $id)
-	{
-        if($this->expense->updateById($id,$request->all())){
+	{   
+        $request_vars = $request->all();
+        $request_vars['user_id'] = auth()->guard('admin')->user()['uuid'];
+        if($this->expense->updateById($id, $request_vars)){
             Flash::success(trans('application.record_updated'));
             return Response::json(array('success'=>true, 'msg' => trans('application.record_updated')), 201);
         }
