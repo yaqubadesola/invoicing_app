@@ -35,14 +35,15 @@
                         </div>
                     </div>
                     <div class="col-sm-2">
-                        <label><b>{{trans('application.invoice_tags')}}</b></label><br>
+                        <!--
+                        <label><b>{{--trans('application.invoice_tags')--}}</b></label><br>
                         <p>{invoice_number} {invoice_amount} {invoice_logo} </p>
-                        <label><b>{{trans('application.client_tags')}}</b></label>
+                        <label><b>{{--trans('application.client_tags')--}}</b></label>
                         <p>{client_name} {client_email} {client_number}</p>
-                        <label><b>{{trans('application.company_tags')}}</b></label><br>
+                        <label><b>{{--trans('application.company_tags')--}}</b></label><br>
                         <p>{company_name} {company_email} {company_website} {contact_person}</p>
-                        <label><b>{{trans('application.users_tags')}}</b></label><br>
-                        {username} {password} {login_link}
+                        <label><b>{{--trans('application.users_tags')--}}</b></label><br>
+                        {username} {password} {login_link}-->
                     </div>
                 </div>
             </div>
