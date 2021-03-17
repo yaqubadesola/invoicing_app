@@ -282,6 +282,11 @@ class EstimatesController extends Controller {
             'template'      => 'emails.invoicer-mailer',
             'subject'       => parse_template($data_object,$request->get('subject'))
         ];
+
+        $params = array_filter($params, function($var){
+            return ($var !== NULL && $var !== FALSE && $var !== "");
+        });
+        
         try {
             sendmail($params);
             Flash::success(trans('application.email_sent'));
